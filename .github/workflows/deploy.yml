@@ -9,7 +9,6 @@ jobs:
   build-and-deploy:
     runs-on: self-hosted  # 내부망에서 실행
 
-    
     steps:
       - name: Github Repository 파일 불러오기
         uses: actions/checkout@v4
@@ -63,7 +62,7 @@ jobs:
           echo VERSION=$VERSION
           echo "::set-output name=version::$VERSION"
 
-          
+
       - name: Build, tag, and push image to Amazon ECR
         id: image-info
         env:
