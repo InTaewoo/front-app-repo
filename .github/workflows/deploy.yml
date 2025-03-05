@@ -78,7 +78,6 @@ jobs:
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v1
         
-      
       - name: Checkout kustomize repository
         uses: actions/checkout@v2
         with:
