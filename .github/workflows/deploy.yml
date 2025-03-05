@@ -70,10 +70,10 @@ jobs:
           ECR_REPOSITORY: instagram-server
           IMAGE_TAG: ${{ steps.image.outputs.version }}
         run: |
-          echo "::set-output name=ecr_repository::\$ECR_REPOSITORY"
-          echo "::set-output name=image_tag::\$IMAGE_TAG"
-          docker build -t \$ECR_REGISTRY/\$ECR_REPOSITORY:\$IMAGE_TAG .
-          docker push \$ECR_REGISTRY/\$ECR_REPOSITORY:\$IMAGE_TAG
+          echo "::set-output name=ecr_repository::$ECR_REPOSITORY"
+          echo "::set-output name=image_tag::$IMAGE_TAG"
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v1
@@ -91,9 +91,9 @@ jobs:
         run: |
           echo ${{ steps.login-ecr.outputs.registry }}
           echo ${{ steps.image-info.outputs.ecr_repository }}
-          echo ${{ steps.image.outputs.version }}
+          echo ${{ steps.image-info.outputs.image_tag }}
           cd k8s-manifest-repo/overlays/dev/
-          kustomize edit set image ${{ steps.login-ecr.outputs.registry }}/instagram-server=${{ steps.login-ecr.outputs.registry }}/instagram-server:${{ steps.image.outputs.version }}
+          kustomize edit set image ${{ steps.login-ecr.outputs.registry}}/${{ steps.image-info.outputs.ecr_repository }}=${{ steps.login-ecr.outputs.registry}}/${{ steps.image-info.outputs.ecr_repository }}:${{ steps.image-info.outputs.image_tag }}
           cat kustomization.yaml
     
       - name: Commit files
