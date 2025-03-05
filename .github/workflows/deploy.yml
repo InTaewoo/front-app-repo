@@ -8,8 +8,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: self-hosted  # 내부망에서 실행
-    steps:
+
     
+    steps:
       - name: Github Repository 파일 불러오기
         uses: actions/checkout@v4
 
@@ -61,7 +62,6 @@ jobs:
           VERSION=$(echo ${{ github.sha }} | cut -c1-8)
           echo VERSION=$VERSION
           echo "::set-output name=version::$VERSION"
-
       - name: ECR에 build, tag, push
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -72,7 +72,6 @@ jobs:
           echo "::set-output name=image_tag::$IMAGE_TAG"
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v1
         
@@ -87,11 +86,11 @@ jobs:
     
       - name: Update Kubernetes resources
         run: |
-          echo \${{ steps.login-ecr.outputs.registry }}
-          echo \${{ steps.image-info.outputs.ecr_repository }}
-          echo \${{ steps.image-info.outputs.image_tag }}
+          echo ${{ steps.login-ecr.outputs.registry }}
+          echo ${{ steps.image-info.outputs.ecr_repository }}
+          echo ${{ steps.image.outputs.version }}
           cd k8s-manifest-repo/overlays/dev/
-          kustomize edit set image \${{ steps.login-ecr.outputs.registry}}/\${{ steps.image-info.outputs.ecr_repository }}=\${{ steps.login-ecr.outputs.registry}}/\${{ steps.image-info.outputs.ecr_repository }}:\${{ steps.image-info.outputs.image_tag }}
+          kustomize edit set image ${{ steps.login-ecr.outputs.registry }}/instagram-server=${{ steps.login-ecr.outputs.registry }}/instagram-server:${{ steps.image.outputs.version }}
           cat kustomization.yaml
     
       - name: Commit files
