@@ -1,4 +1,4 @@
-name: Deploy To EC2
+name: Image build to ECR
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted  # 내부망에서 실행
+    runs-on: ubuntu-latest  # 내부망에서 실행
 
     steps:
       - name: Github Repository 파일 불러오기
