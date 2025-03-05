@@ -63,6 +63,7 @@ jobs:
           echo VERSION=$VERSION
           echo "::set-output name=version::$VERSION"
 
+          
       - name: Build, tag, and push image to Amazon ECR
         id: image-info
         env:
